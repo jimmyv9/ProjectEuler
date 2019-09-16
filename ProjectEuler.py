@@ -1,5 +1,102 @@
 import math
-import helper as h            
+import helper as h
+
+#Find the sum of all the numbers that can be written as the sum of fifth powers of their digits.
+def prob30():
+    nums = []
+    #max possible range will be (9^5)*6 = 354294, since you still can have 6 digits with
+    #the sum of the powers of 5
+    for i in range(10, 354295):
+        string = str(i)
+        total = 0
+        for digit in string:
+            d = int(digit)
+            total += d**5
+        if total == i:
+            nums.append(i)
+    
+    return sum(nums)
+
+#How many distinct items exist in the union of all a^b and b^a, where 1 < a < 101 and
+#1 < b < 101
+def prob29():
+    all_nums = set()
+    for a in range(2, 101):
+        for b in range(2, 101):
+            all_nums.add(a**b)
+            all_nums.add(b**a)
+    return(len(all_nums))
+
+#Starting with 1 and forming  a 1001 by 1001 spiral that grows from the center in a 
+#clockwise direction, we want to add the values of the diagonals
+def prob28():
+    top_right, top_left, bottom_left, bottom_right = 0, 0, 0, 0
+    for i in range(3, 1002, 2):
+        square = i**2
+        top_right += square
+        top_left += square - (i-1)
+        bottom_left += square - 2*(i-1)
+        bottom_right += square - 3*(i-1)
+    return(1 + top_right + top_left + bottom_left + bottom_right)
+
+#Find product of coefficients, a and b, for the quadratic expression of the
+#form n^2+an+b which give the max number of primes for consecutive values of n,
+#starting with n = 0
+def prob27():
+    maxCount = 0
+    finalA = 0
+    finalB = 0
+    answer = 0
+    for a in range(-1000, 1000):
+        for b in range(-1000, 1001):
+            n = 0
+            count = 0
+            y = n**2 + a*n + b
+            if y < 0:
+                continue
+            while(True):
+                y = n**2 + a*n + b
+                if y < 0:
+                    break
+                if h.isPrime(y):
+                    n += 1
+                    count += 1
+                    continue
+                else:
+                    break
+            if count > maxCount:
+                maxCount = count
+                finalA = a
+                finalB = b
+                answer = a*b
+    print(finalA, finalB, answer, maxCount)
+    return(answer)
+                
+    
+
+#In decimal form, what is the number 1/n that has the largest recurring cycle,
+#where n is a positive integer smaller than 1000
+def prob26():
+    maxCycle = 0
+    answer = 0
+    for n in range(2, 1000):
+        #check if n can be represented in the form 2^a*5^b
+        n_prime = n
+        while (n_prime % 2 == 0):
+            n_prime = n_prime//2
+        while (n_prime % 5 == 0):
+            n_prime = n_prime//5
+        if n_prime == 1:
+            continue
+       
+        k = 1
+        while(int(10**k-1) % n_prime != 0):
+            k += 1
+        if k > maxCycle:
+            maxCycle = k
+            answer = n
+    print(answer, maxCycle)
+    return(answer)
 
 #What is the index of the first term in the Fibonacci sequence to contain
 #1000 digits?
@@ -55,7 +152,7 @@ def prob23():
 #Find the sum of all name scores.
 #ANSWER: 871198282
 def prob22():
-    a = h.readstrlist("p22.txt", ",")
+    a = h.readstrlist("22_Names.txt", ",")
     a = [i.replace('"', '') for i in a]
     a = sorted(a)
     
@@ -153,7 +250,7 @@ def prob19():
 #
 #Find the maximum total from top to bottom of the triangle in file "maxpath18.txt"
 def prob18():
-    tri = h.read2dlist("maxpath18.txt")
+    tri = h.read2dlist("18_MaxPath.txt")
     for i in range (len(tri)-2, -1, -1):
         for j in range(0, len(tri[i])):
             if tri[i+1][j] > tri[i+1][j+1]:
@@ -267,7 +364,7 @@ def prob14():
 #ANSWER: 5537376230
 def prob13():
     answer = ""
-    a = h.readintlist("50numbers.txt")
+    a = h.readintlist("13_Numbers.txt")
     sumA = str(sum(a))
     for i in range(0, 10):
         answer += sumA[i]
@@ -291,9 +388,9 @@ def prob12():
 
 #find the greatest product of four adjacent numbers in g, a 20x20 grid (shown
 #below) – adjacency can be vertical, horizontal or diagonal
-#ANSWER: 1788696
+#ANSWER: 70600674
 def prob11():
-    a = h.read2dlist("20x20grid.txt")
+    a = h.read2dlist("11_Grid.txt")
     maxProd, totalHrzt, totalVert, totalDiagTL, totalDiagTR = 0, 0, 0, 0, 0
     for i in range(0, 20):
         for j in range(0, 20):
